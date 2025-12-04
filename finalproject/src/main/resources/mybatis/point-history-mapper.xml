@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pointhistory">
+<!--C 등록-->
+<insert id="insert">
+        insert into point_history(
+            point_history_no,       
+            point_history_member_id, 
+            point_history_amount,
+            point_history_reason, 
+            point_history_date
+        )
+        values(
+            point_history_seq.nextval, 
+            #{pointHistoryMemberId},   
+            #{pointHistoryAmount},     
+            #{pointHistoryReason}, 
+            SYSDATE                    )
+  </insert>
+  <!--U 업데이트
+     발생사유 변동가능
+     발행량 변동가능-->
+  <update id="update">
+  update point_history
+  set
+  	point_history_reason = #{pointHistoryReason},
+  	point_history_amount = #{pointHistoryAmount}
+  where
+    point_history_no= #{pointHistoryNo}
+  </update>
+  
+  <!--R 조회(목록출력) -->
+  <select id="selectList" resultType="PointHistoryDto">
+  select * from point_history
+  where point_history_member_id = #{memberId}
+  order by point_history_no desc
+  </select>
+  
+    <!--R 번호 상세조회 번호기준 -->
+  <select id="selectOneNumber" resultType="PointHistoryDto">
+  select * from point_history
+  where point_history_no = #{pointHistoryNo}
+  </select>
+ 
+  <!--D 삭제-->
+  <delete id="delete">
+  delete from point_history
+  where point_history_no = #{pointHistoryNo}
+  </delete>
+</mapper>
+
+
+
