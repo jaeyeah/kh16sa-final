@@ -3,8 +3,8 @@ package com.kh.finalproject.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.finalproject.configuration.JwtProperties;
 import com.kh.finalproject.dao.MemberTokenDao;
-import com.kh.spring10.configuration.JwtProperties;
 
 @Service
 public class TokenService {

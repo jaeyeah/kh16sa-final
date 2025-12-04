@@ -124,11 +124,6 @@
 		    <scope>runtime</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.kh</groupId>
-			<artifactId>spring10restapi</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 
 	<build>
