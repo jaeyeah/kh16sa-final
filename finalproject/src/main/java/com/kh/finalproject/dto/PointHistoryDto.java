@@ -22,6 +22,10 @@ public class PointHistoryDto {
     // DB컬럼: point_history_reason -> 자바: pointHistoryReason
     private String pointHistoryReason; 
     
+    //DB컬럼: point_history_item_no -> 자바: pointHistoryItemNo (구매 항목을 위해 추가)
+    
+    private Integer pointHistoryItemNo;
+    
     // DB컬럼: point_history_date -> 자바: pointHistoryDate
     private LocalDateTime pointHistoryDate; 
 }
