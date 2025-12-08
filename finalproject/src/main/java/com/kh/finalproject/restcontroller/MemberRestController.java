@@ -134,10 +134,15 @@ public class MemberRestController {
 	
 	//회원탈퇴
 	@DeleteMapping("/{memberId}")
-	public void delete(@PathVariable String memberId) {
+	public void delete(@PathVariable String memberId,
+			@RequestHeader("Authorization") String bearerToken) {
+		//계정 삭제
 		MemberDto memberDto = memberDao.selectOne(memberId);
 		if(memberDto ==null) throw new TargetNotfoundException("존재하지 않는 회원입니다");
 		memberDao.delete(memberId);
+		//토큰 삭제
+		TokenVO tokenVO = tokenService.parse(bearerToken);
+		memberTokenDao.deleteByTarget(tokenVO.getLoginId());
 	}
 	
 	/// 토큰 갱신
