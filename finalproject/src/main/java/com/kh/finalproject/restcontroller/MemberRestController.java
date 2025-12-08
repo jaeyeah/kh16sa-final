@@ -89,6 +89,17 @@ public class MemberRestController {
 		originDto.setMemberAddress2(memberDto.getMemberAddress2());
 		memberDao.update(originDto);
 	}
+	
+	@PutMapping("/password/{loginId}")
+	public void editPassword(
+			@PathVariable String loginId,
+			@RequestBody MemberDto memberDto) {
+		MemberDto originDto = memberDao.selectOne(loginId);
+		if(originDto == null) throw new TargetNotfoundException();
+		// 각 요소 입력
+		originDto.setMemberPw(memberDto.getMemberPw());
+		memberDao.updatePassword(originDto);
+	}
 	//포인트 갱신
 	
 	//신뢰도 갱신
