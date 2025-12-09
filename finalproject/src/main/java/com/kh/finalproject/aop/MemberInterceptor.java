@@ -11,6 +11,7 @@ import com.kh.finalproject.vo.TokenVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+
 @Service
 public class MemberInterceptor implements HandlerInterceptor {
 
@@ -21,8 +22,6 @@ public class MemberInterceptor implements HandlerInterceptor {
 										HttpServletResponse response, Object handler) throws Exception {
 		// 1) option요청 통과
 		if(request.getMethod().equalsIgnoreCase("options")) return true;
-		
-
 		
 		// 2) Authorization 헤더 검사
 		try {
