@@ -13,12 +13,12 @@ public class WatchlistDao {
 	private SqlSession sqlSession;
 	
 	// 등록
-	private void insert(WatchlistDto watchlistDto) {
+	public void insert(WatchlistDto watchlistDto) {
 		sqlSession.insert("watchlist.insert", watchlistDto);
 	}
 	
 	//삭제
-	private boolean delete(Long watchlistContent, String watchlistMember) {
+	public boolean delete(Long watchlistContent, String watchlistMember) {
 		WatchlistDto watchlistDto = new WatchlistDto();
 		watchlistDto.setWatchlistContent(watchlistContent);
 		watchlistDto.setWatchlistMember(watchlistMember);
