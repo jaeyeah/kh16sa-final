@@ -1,5 +1,7 @@
 package com.kh.finalproject.dto;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +16,6 @@ public class WatchlistDto {
 	private Long watchlistContent; 
 	private String watchlistMember;
 	private String watchlistType;
-	private String watchlistTime;
+	private LocalDateTime watchlistTime;
 
 }
