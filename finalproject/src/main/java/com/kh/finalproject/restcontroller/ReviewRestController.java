@@ -57,15 +57,6 @@ public class ReviewRestController {
 		return reviewDao.selectOne(reviewContents,reviewNo);
 	}
 
-
-//	//영화 제목으로 조회
-//	@GetMapping("/{contentsTitle}")
-//	public List<ReviewDto> selectByTitle(@PathVariable String contentsTitle) {
-//		List<ReviewDto> reviewList = reviewDao.detail(contentsTitle);
-//		if(reviewList == null || reviewList.isEmpty()) throw new TargetNotfoundException();
-//		return reviewList;
-//	}
-
 	// 컨텐츠 아이디로 조회
 	@GetMapping("/list/{contentsId}")
 	public List<ReviewDto> selectById(@PathVariable Long contentsId) {
