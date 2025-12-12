@@ -190,19 +190,20 @@
             C.contents_release_date DESC
     </select>
     
-    <select id="selectContentsListByRateRank" resultMap="contentDetailMap">
-	  SELECT 
+   <select id="selectContentsListByRateRank" resultMap="contentDetailMap">
+      SELECT 
         RANKED.*, 
         CG.genre_name AS genre_name_alias
-    	FROM (
+        FROM (
         SELECT *
         FROM (    
             SELECT MAIN.*,
+            -- ▼▼▼ AS ranking 을 AS contents_rate_rank 로 변경 (ResultMap과 일치시킴) ▼▼▼
             ROW_NUMBER() OVER (
                 ORDER BY 
                 MAIN.contents_rate_avg DESC NULLS LAST,
                 MAIN.review_count DESC
-            ) AS ranking
+            ) AS contents_rate_rank
             FROM (
                 SELECT C.*,
                    (SELECT AVG(review_rating) 
@@ -214,31 +215,32 @@
                 FROM contents C
             ) MAIN
         )
-        WHERE ranking &lt;= 10
-    ) RANKED
+        WHERE contents_rate_rank &lt;= 10  ) RANKED
     
     LEFT JOIN contents_genre_map CGM ON RANKED.contents_id = CGM.contents_id
     LEFT JOIN contents_genre CG ON CGM.genre_id = CG.genre_id
     
-    ORDER BY RANKED.ranking ASC
+    ORDER BY RANKED.contents_rate_rank ASC
     </select>
     
     <select id="selectContentsListByPriceRank" resultMap="contentDetailMap">
-	  SELECT 
+      SELECT 
         RANKED.*, 
         CG.genre_name AS genre_name_alias
-    	FROM (
+        FROM (
         SELECT *
         FROM (    
             SELECT MAIN.*,
+            -- ▼▼▼ AS ranking 을 AS contents_price_rank 로 변경 ▼▼▼
             ROW_NUMBER() OVER (
                 ORDER BY 
                 MAIN.contents_price_avg DESC NULLS LAST,
                 MAIN.review_count DESC
-            ) AS ranking
+            ) AS contents_price_rank
             FROM (
                 SELECT C.*,
-                   (SELECT AVG(review_rating) 
+                   -- ▼▼▼ [중요 수정] review_rating -> review_price 로 변경해야 함 ▼▼▼
+                   (SELECT AVG(review_price) 
                     FROM review R 
                     WHERE R.review_contents = C.contents_id) AS contents_price_avg,
                    (SELECT COUNT(*) 
@@ -247,13 +249,12 @@
                 FROM contents C
             ) MAIN
         )
-        WHERE ranking &lt;= 10
-    ) RANKED
+        WHERE contents_price_rank &lt;= 10 ) RANKED
     
     LEFT JOIN contents_genre_map CGM ON RANKED.contents_id = CGM.contents_id
     LEFT JOIN contents_genre CG ON CGM.genre_id = CG.genre_id
     
-    ORDER BY RANKED.ranking ASC
+    ORDER BY RANKED.contents_price_rank ASC
     </select>
     
     <select id="selectGenreList" resultType="GenreDto">
