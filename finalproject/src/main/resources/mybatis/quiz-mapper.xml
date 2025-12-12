@@ -35,6 +35,7 @@
 			select Q.* from quiz Q
 			where Q.quiz_contents_id = #{quizContentsId}
 			and Q.quiz_status = 'ACTIVE' -- 삭제되거나 블라인드 처리된 퀴즈는 안나오게
+			and Q.quiz_creator_id != #{quizLogMemberId} -- 내가 출제한 문제는 안나오게
 			and Q.quiz_id not in (
 				select L.quiz_log_quiz_id
 				from quiz_log L

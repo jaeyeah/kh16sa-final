@@ -23,6 +23,36 @@
 		select * from member order by member_join desc
 	</select>
 	
+	<!-- 관리자 제외하고 조회 -->
+	<select id="selectListByAdmin" resultType="memberDto">
+		select * from member 
+		where member_level != '관리자'
+		order by member_join desc
+	</select>
+	
+	<!-- 검색 -->
+	<select id="selectAdminList" parameterType="map" resultType="MemberDto">
+		select * from member
+		<where>
+			<if test="keyword != null and keyword != ''">
+				<choose>
+					<when test="type == 'memberId'">
+						and member_id LIKE '%' || #{keyword} || '%'
+					</when>
+					
+					<when test="type == 'memberNickname'">
+						and member_nickname LIKE '%' || #{keyword} || '%'
+					</when>
+					
+					<when test="type == 'memberLevel'">
+						and member_level = #{keyword}
+					</when>
+				</choose>
+			</if>
+		</where>
+		order by member_join desc
+	</select>
+	
 	
 	<!-- 상세조회 -->
 	<select id="detail" resultType="memberDto">
@@ -69,6 +99,12 @@
 		update member
 		set member_reliability=#{memberReliability}
 		where member_id=#{memberId}
+	</update>
+	
+	<update id="updateMemberLevel">
+		update member
+		set member_level = #{memberLevel}
+		where member_id = #{memberId}
 	</update>
 	
 	<!-- 삭제 -->
