@@ -1,9 +1,7 @@
 package com.kh.finalproject.vo;
 
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +18,8 @@ public class MemberQuizRateVO {
 	private int correctCount;
 	private int wrongCount;
 	
-	private double correctRate() {
-		return correctCount / (correctCount+wrongCount);
+	@JsonProperty("correctRate")
+	public double getCorrectRate() {
+		return (double) correctCount / (correctCount+wrongCount);
 	}
 }

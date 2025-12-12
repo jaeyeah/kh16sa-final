@@ -6,7 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.kh.finalproject.dto.QuizDto;
+import com.kh.finalproject.vo.MemberAddQuizListVO;
 import com.kh.finalproject.vo.MemberQuizListVO;
 import com.kh.finalproject.vo.MemberQuizRateVO;
 
@@ -17,7 +17,7 @@ public class MemberQuizDao {
 	private SqlSession sqlSession;
 	
 	//// 내가 등록한 퀴즈관련 항목
-	public List<QuizDto> selectAddList(String loginId){
+	public List<MemberAddQuizListVO> selectAddList(String loginId){
 		return sqlSession.selectList("quiz.listByMyQuiz",loginId);
 	}
 	

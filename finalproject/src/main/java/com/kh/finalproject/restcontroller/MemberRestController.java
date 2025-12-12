@@ -21,10 +21,10 @@ import com.kh.finalproject.dao.MemberReviewDao;
 import com.kh.finalproject.dao.MemberTokenDao;
 import com.kh.finalproject.dao.MemberWatchDao;
 import com.kh.finalproject.dto.MemberDto;
-import com.kh.finalproject.dto.QuizDto;
 import com.kh.finalproject.error.TargetNotfoundException;
 import com.kh.finalproject.error.UnauthorizationException;
 import com.kh.finalproject.service.TokenService;
+import com.kh.finalproject.vo.MemberAddQuizListVO;
 import com.kh.finalproject.vo.MemberLoginResponseVO;
 import com.kh.finalproject.vo.MemberQuizListVO;
 import com.kh.finalproject.vo.MemberQuizRateVO;
@@ -188,7 +188,7 @@ public class MemberRestController {
 	}
 	// 등록한 퀴즈 
 	@GetMapping("/myaddquiz/{loginId}")
-	public List<QuizDto>selectAddQuizList(@PathVariable String loginId){
+	public List<MemberAddQuizListVO>selectAddQuizList(@PathVariable String loginId){
 		return memberQuizDao.selectAddList(loginId);
 	}
 	// 내가 푼 퀴즈 목록
