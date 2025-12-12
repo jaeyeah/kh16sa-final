@@ -24,6 +24,7 @@ public class MemberReviewListVO {
 	private Long reviewContents; //영화id 외래키
 	private String reviewWriter; //리뷰 작성자(멤버id 외래키)
 	private Integer reviewRating; //리뷰 별점
+	private Integer reviewPrice; //리뷰 가격
 	@NotBlank
 	private String reviewText; //리뷰 내용
 	@PositiveOrZero
