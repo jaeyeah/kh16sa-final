@@ -43,7 +43,7 @@ public class BoardDao {
 	
 	// 삭제
 	public void delete(int boardNo) {
-		sqlSession.delete("board.detail", boardNo);
+		sqlSession.delete("board.delete", boardNo);
 	}
 	
 }
