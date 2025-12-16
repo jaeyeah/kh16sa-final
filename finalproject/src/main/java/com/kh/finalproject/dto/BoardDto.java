@@ -21,6 +21,7 @@ public class BoardDto {
 	private LocalDateTime boardWtime;
 	private LocalDateTime boardEtime;
 	private String boardText;
+	private int boardViewCount;
 	private int boardLike;
 	private int boardUnlike;
 	private int boardReply;
