@@ -270,7 +270,7 @@
     </select>
     
     <select id="selectTitleById" resultType="string">
-    	SELECT contents_id FROM contents WHERE contents_id = #{contentsId}
+    	SELECT contents_title FROM contents WHERE contents_id = #{contentsId}
     </select>
  	
  </mapper>

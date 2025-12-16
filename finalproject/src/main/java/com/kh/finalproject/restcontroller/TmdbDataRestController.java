@@ -171,7 +171,7 @@ public class TmdbDataRestController {
 	    
 	    //id로 제목 조회(for board)
 	    @GetMapping("/title/{boardContentsId}")
-	    public String selectTitleById(@PathVariable Long boardConentsId) {
-	    	return contentsDao.selectTitleById(boardConentsId);
+	    public String selectTitleById(@PathVariable Long boardContentsId) {
+	    	return contentsDao.selectTitleById(boardContentsId);
 	    }
 }
