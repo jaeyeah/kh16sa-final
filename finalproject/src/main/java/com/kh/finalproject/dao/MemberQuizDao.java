@@ -1,14 +1,18 @@
 package com.kh.finalproject.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.finalproject.dto.QuizDto;
 import com.kh.finalproject.vo.MemberAddQuizListVO;
 import com.kh.finalproject.vo.MemberQuizListVO;
 import com.kh.finalproject.vo.MemberQuizRateVO;
+import com.kh.finalproject.vo.PageVO;
 
 @Repository
 public class MemberQuizDao {
@@ -16,11 +20,15 @@ public class MemberQuizDao {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	//// 내가 등록한 퀴즈관련 항목
-	public List<MemberAddQuizListVO> selectAddList(String loginId){
-		return sqlSession.selectList("quiz.listByMyQuiz",loginId);
+	//내가 등록한 퀴즈 목록 조회
+	public List<MemberAddQuizListVO> selectMyQuizListWithPage(String loginId, int page) {
+		PageVO pageVO = new PageVO();
+		pageVO.setPage(page);
+		Map<String, Object> param = new HashMap<>();
+		param.put("loginId", loginId);
+		param.put("page", pageVO);
+	    return sqlSession.selectList("quiz.listByMyQuizWithPage", param);
 	}
-	
 	/// 내가 푼 퀴즈 관련 항목
 	// 푼 퀴즈 리스트
 	public List<MemberQuizListVO> selectAnswerList(String loginId){

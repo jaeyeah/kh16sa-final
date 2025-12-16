@@ -187,9 +187,15 @@ public class MemberRestController {
 		return memberWatchDao.selectList(loginId);
 	}
 	// 등록한 퀴즈 
-	@GetMapping("/myaddquiz/{loginId}")
-	public List<MemberAddQuizListVO>selectAddQuizList(@PathVariable String loginId){
-		return memberQuizDao.selectAddList(loginId);
+//	@GetMapping("/myaddquiz/{loginId}")
+//	public List<MemberAddQuizListVO> selectAddQuizList(@PathVariable String loginId){
+//		return memberQuizDao.selectAddList(loginId);
+//	}
+	// 등록한 퀴즈 + 페이지네이션
+	@GetMapping("/myaddquiz/{loginId}/{page}")
+	public List<MemberAddQuizListVO> selectAddQuizListWithPage(
+				@PathVariable String loginId, @PathVariable int page){
+		return memberQuizDao.selectMyQuizListWithPage(loginId, page);
 	}
 	// 내가 푼 퀴즈 목록
 	@GetMapping("/myanswerquiz/{loginId}")
