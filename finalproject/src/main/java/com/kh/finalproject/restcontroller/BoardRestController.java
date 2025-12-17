@@ -254,7 +254,7 @@ public class BoardRestController {
 		if(tokenVO == null) return;
 		String loginId = tokenVO.getLoginId();
 		long now = System.currentTimeMillis();
-		long limitTime = 30 * 60 * 1000;
+		long limitTime = 24 * 60 * 60 * 1000;
 		
 		 ///세션에서 loginId-boardNo 중복여부 검사
 		 // 세션에서 전체 조회 기록맵 꺼내기
@@ -270,7 +270,7 @@ public class BoardRestController {
 	        return;
 	    }
 	    userHistory.put(boardNo, now);
-	    // 30분 지난 기록 정리
+	    // 1일 지난 기록 정리
 			    userHistory.entrySet().removeIf(
 			        e -> now - e.getValue() > limitTime
 			    );
