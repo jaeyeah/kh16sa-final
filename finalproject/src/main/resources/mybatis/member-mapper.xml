@@ -143,9 +143,7 @@
 		select member_reliability
 		from member
 		where member_id = #{memberId}
-	</select>
-	
-	
+	</select>		
 	
 	<update id="deleteReliability">
 		update member
