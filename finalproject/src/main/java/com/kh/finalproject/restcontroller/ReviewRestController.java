@@ -31,7 +31,8 @@ import com.kh.finalproject.vo.ReviewLikeVO;
 @RequestMapping("/review")
 public class ReviewRestController {
 
-    private final ReviewService reviewService;
+	@Autowired
+    private ReviewService reviewService;
 	@Autowired
 	private ReviewDao reviewDao;
 	@Autowired
@@ -41,30 +42,22 @@ public class ReviewRestController {
     private DailyQuestService dailyQuestService;
 
 
-    ReviewRestController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
-
 
 	// 등록
 	@PostMapping("/")
 	public void insert(@RequestBody ReviewDto reviewDto) {
-
-		reviewDao.insert(reviewDto);
-
 		reviewService.addReview(reviewDto);
-
-
 		if (reviewDto.getReviewWriter() != null) {
             dailyQuestService.questProgress(reviewDto.getReviewWriter(), "REVIEW");
-		
+		}
 	}
-	}
+	
+	
 	// 전체 리뷰 조회
 	@GetMapping("/reviewContents/{reviewContents}")
 	public List<ReviewDto> selectByContents(@PathVariable Long reviewContents) {
 		return reviewDao.selectByContents(reviewContents);
-	} 
+	}
 
 
 	
@@ -119,7 +112,12 @@ public class ReviewRestController {
        
         if(originDto == null) throw new TargetNotfoundException();
         reviewService.deleteReview(reviewContents, reviewNo);
+        
+        boolean success = reviewDao.delete(reviewContents, reviewNo);
+        if(!success) throw new TargetNotfoundException();
     }
+
+
 
 	// 좋아요 관련
 
