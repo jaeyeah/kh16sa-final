@@ -47,7 +47,7 @@ public class ReviewRestController {
 	@GetMapping("/reviewContents/{reviewContents}")
 	public List<ReviewDto> selectByContents(@PathVariable Long reviewContents) {
 		return reviewDao.selectByContents(reviewContents);
-	}
+	} 
 
 
 	
