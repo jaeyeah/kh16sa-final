@@ -91,5 +91,14 @@
         </when>
     </choose>
 </select>
+
+<select id="countTodayPurchase" resultType="int">
+    SELECT count(*) 
+    FROM point_history 
+    WHERE point_history_member_id = #{memberId}
+    AND point_history_reason LIKE '%' || #{itemName} || '%'
+    AND TRUNC(point_history_created_at) = TRUNC(SYSDATE)
+    AND point_history_trx_type = 'USE'
+</select>
   
 </mapper>

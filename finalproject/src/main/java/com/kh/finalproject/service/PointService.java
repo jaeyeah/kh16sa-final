@@ -109,7 +109,26 @@ public class PointService {
         }
     }
 
-    @Transactional public void purchaseItem(String id, long no) { processTransaction(id, id, no, "USE"); }
+    @Transactional
+    public void purchaseItem(String id, long no) {
+        PointItemStoreDto item = pointItemDao.selectOneNumber(no);
+        if (item == null) throw new RuntimeException("상품 정보가 없습니다.");
+
+        // [범용 로직] 일일 구매 제한이 설정된 아이템(0보다 큰 값)인 경우 체크
+        if (item.getPointItemDailyLimit() > 0) {
+            int todayCount = pointHistoryDao.countTodayPurchase(id, item.getPointItemName());
+            
+            if (todayCount >= item.getPointItemDailyLimit()) {
+                throw new RuntimeException(
+                    "[" + item.getPointItemName() + "] 상품은 하루에 최대 " 
+                    + item.getPointItemDailyLimit() + "개까지만 구매 가능합니다."
+                );
+            }
+        }
+
+        // 검증 통과 시 구매 진행
+        processTransaction(id, id, no, "USE");
+    }
     @Transactional public void giftItem(String sid, String tid, long no) { processTransaction(sid, tid, no, "SEND"); }
 
     // [4] 인벤토리 관리 (아이템 실제 사용 효과)
