@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kh.finalproject.dao.HeartDao;
 import com.kh.finalproject.dao.InventoryDao;
 import com.kh.finalproject.dao.MemberDao;
 import com.kh.finalproject.dao.MemberIconDao;
@@ -30,7 +31,7 @@ public class PointService {
     @Autowired private PointWishlistDao pointWishlistDao;
     @Autowired private DailyQuestService dailyQuestService;
     @Autowired private MemberIconDao memberIconDao;
-
+    @Autowired private HeartDao heartDao;
     // [1] 포인트 증감 공통 메서드
     @Transactional
     public boolean addPoint(String loginId, int amount, String trxType, String reason) {
@@ -64,21 +65,27 @@ public class PointService {
         if (item == null) throw new RuntimeException("상품 정보가 없습니다.");
         if (item.getPointItemStock() <= 0) throw new RuntimeException("품절된 상품입니다.");
 
-        // 일일 구매 제한 체크
+        // 일일 구매 제한 체크 (여기서 이미 오늘 몇 번 샀는지 체크함)
         if (item.getPointItemDailyLimit() > 0) {
             int todayCount = pointHistoryDao.countTodayPurchase(loginId, item.getPointItemName());
-            if (todayCount >= item.getPointItemDailyLimit()) throw new RuntimeException("일일 구매 제한 초과");
+            if (todayCount >= item.getPointItemDailyLimit()) 
+                throw new RuntimeException("일일 구매 제한 초과 (하루 최대 " + item.getPointItemDailyLimit() + "개)");
         }
 
         // 포인트 차감 및 이력 남기기
         addPoint(loginId, -(int)item.getPointItemPrice(), "USE", "아이템 구매: " + item.getPointItemName());
 
-        // 재고 감소 및 인벤토리 지급
+        // 재고 감소
         item.setPointItemStock(item.getPointItemStock() - 1);
         pointItemDao.update(item);
-        giveItemToInventory(loginId, itemNo);
-    }
 
+        // ★ [핵심 로직] 하트 충전권인 경우 즉시 충전, 아니면 인벤토리 지급
+        if ("HEART_RECHARGE".equals(item.getPointItemType())) {
+            chargeHeart(loginId, 5); // 즉시 5개 충전
+        } else {
+            giveItemToInventory(loginId, itemNo); // 일반 아이템은 보관함으로
+        }
+    }
     // [3] 포인트 후원 (추가됨)
     @Transactional
     public void donatePoints(String loginId, String targetId, int amount) {
@@ -143,6 +150,10 @@ public class PointService {
                 memberDao.updateNickname(MemberDto.builder().memberId(loginId).memberNickname(extraValue).build());
                 decreaseInventoryOrDelete(inven);
                 break;    
+            case "HEART_RECHARGE":
+                chargeHeart(loginId, 5); 
+                decreaseInventoryOrDelete(inven);
+                break;
             case "DECO_NICK": case "DECO_BG": case "DECO_ICON": case "DECO_FRAME":
                 unequipByType(loginId, type); 
                 inven.setInventoryEquipped("Y");
@@ -248,4 +259,16 @@ public class PointService {
     }
     public List<Long> getMyWishItemNos(String loginId) { return pointWishlistDao.selectMyWishItemNos(loginId); }
     public List<PointWishlistDto> getMyWishlist(String loginId) { return pointWishlistDao.selectMyWishlist(loginId); }
+    @Transactional
+    public void chargeHeart(String memberId, int amount) {
+        if (memberId == null) throw new RuntimeException("로그인이 필요합니다.");
+        
+        // 지갑 없으면 생성 (Heart 관련 테이블 구조에 따라 다름)
+        if (heartDao.selectHeart(memberId) == null) {
+            heartDao.createHeartWallet(memberId);
+        }
+        
+        // 하트 증가
+        heartDao.increaseHeart(memberId, amount);
+    }
 }

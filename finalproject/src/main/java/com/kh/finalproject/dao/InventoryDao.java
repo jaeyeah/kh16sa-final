@@ -58,6 +58,7 @@ public class InventoryDao {
     public List<InventoryDto> selectListByAdmin(String memberId) {
         return sqlSession.selectList("inventory.selectListByAdmin", memberId);
     }
+    
 }
 
 	
