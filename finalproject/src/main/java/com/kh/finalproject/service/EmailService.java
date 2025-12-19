@@ -37,7 +37,7 @@ public class EmailService {
 		// 메세지 생성 및 전송
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(email);
-		message.setSubject("[영화리뷰커뮤니티] 회원가입용 인증번호 전송");
+		message.setSubject("[Review Tag] 회원가입용 인증번호 전송");
 		message.setText("인증번호는 ["+certNumber+"] 입니다");
 		sender.send(message);
 		
