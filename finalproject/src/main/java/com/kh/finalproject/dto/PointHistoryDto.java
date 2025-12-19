@@ -19,4 +19,5 @@ public class PointHistoryDto {
     
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private Timestamp pointHistoryCreatedAt; 
+
 }

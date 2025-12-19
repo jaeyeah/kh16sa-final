@@ -25,8 +25,11 @@ public class DailyQuestService {
     @Autowired private PointGetQuestDao questDao;       
     
     @Lazy
-    @Autowired private PointService pointService;       
-    @Autowired private DailyQuizDao quizDao;            
+
+    @Autowired private PointService pointService;       // 포인트 지급 및 이력 관리
+    @Autowired private DailyQuizDao quizDao;            // 퀴즈 DB 접근 (SqlSession 사용)
+
+
 
     private String getTodayStr() {
         return LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
