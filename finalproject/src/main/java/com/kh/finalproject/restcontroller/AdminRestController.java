@@ -24,12 +24,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.finalproject.dao.BoardDao;
+import com.kh.finalproject.dao.BoardReportDao;
 import com.kh.finalproject.dao.DailyQuizDao;
 import com.kh.finalproject.dao.InventoryDao;
 import com.kh.finalproject.dao.MemberDao;
 import com.kh.finalproject.dao.MemberIconDao;
 import com.kh.finalproject.dao.MemberTokenDao;
+
+import com.kh.finalproject.dto.BoardDto;
+
 import com.kh.finalproject.dao.PointItemStoreDao;
+
 import com.kh.finalproject.dto.IconDto;
 import com.kh.finalproject.dto.InventoryDto;
 import com.kh.finalproject.dto.MemberDto;
@@ -91,10 +96,19 @@ public class AdminRestController {
 	@Autowired
 	private BoardDao boardDao;
 
-	// 기존 회원 목록 조회(관리자 제외, 일반 페이징)
-	@GetMapping("/members")
-	public PageResponseVO getMemberList(@RequestParam int page, @RequestParam(required = false) String type,
-			@RequestParam(required = false) String keyword) {
+	@Autowired
+	private BoardReportDao boardReportDao;
+	
+	
+	
+
+	//기존 회원 목록 조회(관리자 제외, 일반 페이징)
+	@GetMapping("/members") 
+	public PageResponseVO getMemberList(
+			@RequestParam int page,
+			@RequestParam(required = false) String type, 
+			@RequestParam(required = false) String keyword
+			){
 		PageVO pageVO = new PageVO();
 		pageVO.setPage(page);
 
@@ -300,19 +314,178 @@ public class AdminRestController {
 	}
 
 	@GetMapping("/dailyquiz/list")
-	public Map<String, Object> list(@RequestParam(defaultValue = "1") int page,
-			@RequestParam(required = false, defaultValue = "all") String type,
-			@RequestParam(required = false, defaultValue = "") String keyword) {
-		int size = 10;
-		int startRow = (page - 1) * size + 1;
-		int endRow = page * size;
+    public Map<String, Object> list(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "all") String type, 
+            @RequestParam(required = false, defaultValue = "") String keyword 
+    ) {
+        int size = 10;
+        int startRow = (page - 1) * size + 1;
+        int endRow = page * size;
 
-		List<DailyQuizVO> list = dailyQuizDao.selectList(startRow, endRow, type, keyword);
-		int totalCount = dailyQuizDao.count(type, keyword);
-		int totalPage = (totalCount + size - 1) / size;
+        List<DailyQuizVO> list = dailyQuizDao.selectList(startRow, endRow, type, keyword);
+        int totalCount = dailyQuizDao.count(type, keyword);
+        int totalPage = (totalCount + size - 1) / size;
 
-		return Map.of("list", list, "totalPage", totalPage, "currentPage", page);
-	}
+        return Map.of(
+            "list", list,
+            "totalPage", totalPage,
+            "currentPage", page
+        );
+    }
+
+    // 2. 등록 (주소: /admin/dailyquiz/)
+    @PostMapping("/dailyquiz/")
+    public String insert(@RequestBody DailyQuizVO vo) {
+        dailyQuizDao.insert(vo);
+        return "success";
+    }
+
+    // 3. 수정 (주소: /admin/dailyquiz/)
+    @PutMapping("/dailyquiz/")
+    public String update(@RequestBody DailyQuizVO vo) {
+        boolean result = dailyQuizDao.update(vo);
+        return result ? "success" : "fail";
+    }
+
+    // 4. 삭제 (주소: /admin/dailyquiz/{quizNo})
+    @DeleteMapping("/dailyquiz/{quizNo}")
+    public String delete(@PathVariable int quizNo) {
+        boolean result = dailyQuizDao.delete(quizNo);
+        return result ? "success" : "fail";
+    }
+    
+
+    @GetMapping("/inventory/{memberId}")
+    public List<InventoryDto> getUserInventory(@PathVariable String memberId) {
+        return inventoryDao.selectListByAdmin(memberId);
+    }
+
+    @DeleteMapping("/inventory/{inventoryNo}")
+    public ResponseEntity<String> recallItem(@PathVariable long inventoryNo) {
+        boolean isDeleted = inventoryDao.delete(inventoryNo);
+        
+        if (isDeleted) {
+            return ResponseEntity.ok("Item successfully recalled.");
+        } else {
+            return ResponseEntity.status(404).body("Item not found or recall failed.");
+        }
+    }
+    // ------------------------------------------------------------
+
+  	//게시판 신고 관리 페이지
+  	@GetMapping("/board/reports")
+  	public List<BoardReportStatsVO> getBReportList(
+  			@RequestParam String status,
+  			@RequestAttribute TokenVO tokenVO,
+  			@RequestParam(defaultValue = "1") Integer page
+  			) {
+      	int size = 2; // 한 페이지당 보여줄 개수 
+          
+          // Oracle 페이징 계산 (1페이지: 1~12, 2페이지: 13~24 ...)
+          int end = page * size;
+          int start = end - (size - 1);
+          
+          Map<String, Object> params = new HashMap<>();
+          params.put("start", start);
+          params.put("end", end);
+          
+  		String loginLevel = tokenVO.getLoginLevel();
+  		params.put("loginLevel", loginLevel);
+  		params.put("status", status);
+  		 List<BoardReportStatsVO> list = adminService.getReportedBoardList(params);
+  		return list;
+  	}
+
+  	//게시글 신고 상세 내역 페이지
+  	@GetMapping("/board/{boardNo}/reports")
+  	public List<BoardReportDetailVO> getReportBDetail(
+  			@PathVariable int boardNo,
+  			@RequestAttribute TokenVO tokenVO
+  			) {
+  		
+  		String loginLevel = tokenVO.getLoginLevel();
+  		
+         return adminService.getReportBDetails(loginLevel, boardNo);
+      }
+  	
+  	//게시글 내용 조회
+  	@GetMapping("/board/{boardNo}/text")
+  	public BoardDto getBoardText(@PathVariable int boardNo) {
+  		return boardReportDao.selectBoardText(boardNo);
+  	}
+  	
+  	//게시글 삭제
+  	@DeleteMapping("/board/{boardNo}")
+      public boolean deleteBoard(
+      		@PathVariable int boardNo,
+              @RequestAttribute TokenVO tokenVO
+              ) {
+          String loginId = tokenVO.getLoginId();
+          String loginLevel = tokenVO.getLoginLevel();
+          
+          if(!"관리자".equals(loginLevel) && loginId == null) throw new NeedPermissionException();
+  		
+          return boardDao.delete(boardNo);
+      }
+  	
+  	
+  
+        // 1. 지급 가능한 전체 아이템 목록 조회 (상점 데이터)
+        @GetMapping("/inventory/item-list")
+        public List<PointItemStoreDto> getItemList() {
+            return pointItemStoreDao.selectList(); 
+        }
+
+        // 2. 특정 사용자에게 아이템 지급
+        @PostMapping("/inventory/{memberId}/{itemNo}")
+        public ResponseEntity<Void> grantItem(@PathVariable String memberId, @PathVariable long itemNo) {
+            InventoryDto dto = new InventoryDto();
+            dto.setInventoryMemberId(memberId);
+            dto.setInventoryItemNo(itemNo);
+            inventoryDao.insert(dto); // 
+            return ResponseEntity.ok().build();
+        }
+     // 특정 유저의 아이콘 목록 조회
+        @GetMapping("/icon/{memberId}")
+        public List<MemberIconDto> getUserIcons(@PathVariable String memberId) {
+            List<MemberIconDto> list = memberIconDao.selectUserIcon(memberId);
+            return list == null ? new ArrayList<>() : list;
+        }
+
+        @GetMapping("/icon/list")
+        public List<IconDto> getIconList() {
+            return memberIconDao.selectIconList();
+        }
+
+        @PostMapping("/icon/{memberId}/{iconId}")
+        public ResponseEntity<String> grantIcon(
+                @PathVariable String memberId,
+                @PathVariable int iconId) {
+
+            int count = memberIconDao.checkUserHasIcon(memberId, iconId);
+            if (count > 0) {
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body("이미 보유 중");
+            }
+
+            memberIconDao.insertMemberIcon(memberId, iconId);
+            return ResponseEntity.ok("지급 완료");
+        }
+
+        @DeleteMapping("/icon/{memberIconId}")
+        public ResponseEntity<Void> recallIcon(
+                @PathVariable long memberIconId) {
+
+            int result = memberIconDao.deleteMemberIcon(memberIconId);
+            return result > 0
+                    ? ResponseEntity.ok().build()
+                    : ResponseEntity.notFound().build();
+        }
+        
+    }
+
 
 	// 2. 등록 (주소: /admin/dailyquiz/)
 	@PostMapping("/dailyquiz/")
