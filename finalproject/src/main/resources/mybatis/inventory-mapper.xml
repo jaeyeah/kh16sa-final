@@ -98,15 +98,16 @@
         P.POINT_ITEM_SRC        AS "pointItemSrc",
         P.POINT_ITEM_TYPE       AS "pointItemType"
     FROM INVENTORY I
-    /* 1. 아이템 정보 연결 (상점에 아이템이 없어도 내역은 유지) */
+
     LEFT OUTER JOIN POINT_ITEM_STORE P ON I.INVENTORY_ITEM_NO = P.POINT_ITEM_NO
-    /* 2. 회원 정보 연결 (등급 확인용) */
+
     JOIN MEMBER M ON I.INVENTORY_MEMBER_ID = M.MEMBER_ID
     WHERE I.INVENTORY_MEMBER_ID = #{memberId}
-      /* 3. 관리자 등급은 결과에서 제외 */
+
       AND M.MEMBER_LEVEL != '관리자'
     ORDER BY I.INVENTORY_CREATED_AT DESC
 </select>
+
 <select id="selectOneByMemberAndItem" resultType="InventoryDto">
     SELECT 
         INVENTORY_NO AS "inventoryNo",
@@ -119,4 +120,15 @@
     WHERE INVENTORY_MEMBER_ID = #{inventoryMemberId}
       AND INVENTORY_ITEM_NO = #{inventoryItemNo}
 </select>
+
+<update id="unequipByType">
+    UPDATE inventory 
+    SET inventory_equipped = 'N'
+    WHERE inventory_member_id = #{memberId}
+    AND inventory_item_no IN (
+        SELECT point_item_no 
+        FROM point_item_store 
+        WHERE point_item_type = #{type}
+    )
+</update>
 </mapper>
