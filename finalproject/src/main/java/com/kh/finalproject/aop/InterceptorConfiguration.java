@@ -23,8 +23,6 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
     			"/board/**",
     			"/board/viewUpdate/**");
     	
-    	
-    	
         // 1. 로그인 검사 인터셉터 (회원 전용 기능 보호)
          registry.addInterceptor(memberInterceptor)
             .addPathPatterns(
