@@ -386,21 +386,7 @@ public class AdminRestController {
     }
     
 
-    @GetMapping("/inventory/{memberId}")
-    public List<InventoryDto> getUserInventory(@PathVariable String memberId) {
-        return inventoryDao.selectListByAdmin(memberId);
-    }
-
-    @DeleteMapping("/inventory/{inventoryNo}")
-    public ResponseEntity<String> recallItem(@PathVariable long inventoryNo) {
-        boolean isDeleted = inventoryDao.delete(inventoryNo);
-        
-        if (isDeleted) {
-            return ResponseEntity.ok("Item successfully recalled.");
-        } else {
-            return ResponseEntity.status(404).body("Item not found or recall failed.");
-        }
-    }
+ 
     // ------------------------------------------------------------
 
   	//게시판 신고 관리 페이지
@@ -459,8 +445,41 @@ public class AdminRestController {
           return boardDao.delete(boardNo);
       }
   	
-  	
-  	
+  	@GetMapping("/inventory/list")
+    public Map<String, Object> getInventoryAdminMembers(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page) {
+        
+        int size = 10;
+        int startRow = (page - 1) * size + 1;
+        int endRow = page * size;
+
+        // InventoryDao에 새로 추가한 메소드 호출
+        List<MemberDto> list = inventoryDao.fetchAdminMemberList(keyword, startRow, endRow);
+        int totalCount = inventoryDao.countAdminMembers(keyword);
+        int totalPage = (totalCount + size - 1) / size;
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("list", list);
+        response.put("totalPage", totalPage);
+        
+        return response;
+    }
+    @GetMapping("/inventory/{memberId}")
+    public List<InventoryDto> getUserInventory(@PathVariable String memberId) {
+        return inventoryDao.selectListByAdmin(memberId);
+    }
+  
+    @DeleteMapping("/inventory/{inventoryNo}")
+    public ResponseEntity<String> recallItem(@PathVariable long inventoryNo) {
+        boolean isDeleted = inventoryDao.delete(inventoryNo);
+        
+        if (isDeleted) {
+            return ResponseEntity.ok("Item successfully recalled.");
+        } else {
+            return ResponseEntity.status(404).body("Item not found or recall failed.");
+        }
+    }
         // 1. 지급 가능한 전체 아이템 목록 조회 (상점 데이터)
         @GetMapping("/inventory/item-list")
         public List<PointItemStoreDto> getItemList() {
