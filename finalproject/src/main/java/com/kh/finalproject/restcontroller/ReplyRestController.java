@@ -23,7 +23,7 @@ import com.kh.finalproject.vo.ReplyListVO;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/reply")
+@RequestMapping("/api/reply")
 public class ReplyRestController {
 
 	@Autowired

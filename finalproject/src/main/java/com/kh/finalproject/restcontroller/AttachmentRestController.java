@@ -21,7 +21,7 @@ import com.kh.finalproject.service.AttachmentService;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/attachment")
+@RequestMapping("/api/attachment")
 public class AttachmentRestController {
 	
 	@Autowired

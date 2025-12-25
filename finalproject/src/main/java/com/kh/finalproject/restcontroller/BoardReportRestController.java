@@ -20,7 +20,7 @@ import com.kh.finalproject.vo.TokenVO;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/board/report")
+@RequestMapping("/api/board/report")
 public class BoardReportRestController {
 	
 	@Autowired

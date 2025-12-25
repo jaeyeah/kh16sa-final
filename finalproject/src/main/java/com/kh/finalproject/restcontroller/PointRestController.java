@@ -15,7 +15,7 @@ import com.kh.finalproject.vo.PointHistoryPageVO;
 import com.kh.finalproject.vo.PointUseVO;
 
 @RestController
-@RequestMapping("/point") // 엔드포인트 구조 통일
+@RequestMapping("/api/point") // 엔드포인트 구조 통일
 @CrossOrigin
 public class PointRestController {
 

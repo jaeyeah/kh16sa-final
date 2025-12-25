@@ -15,7 +15,7 @@ import com.kh.finalproject.vo.TokenVO;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/heart")
+@RequestMapping("/api/heart")
 public class HeartRestController {
 	
 	@Autowired

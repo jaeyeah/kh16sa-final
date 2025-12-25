@@ -20,7 +20,7 @@ import com.kh.finalproject.vo.TokenVO;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/quiz")
+@RequestMapping("/api/quiz")
 public class QuizRestController {
 	
 	@Autowired
