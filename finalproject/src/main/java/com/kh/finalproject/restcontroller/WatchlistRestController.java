@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @CrossOrigin
 @RestController
-@RequestMapping("/watchlist")
+@RequestMapping("/api/watchlist")
 public class WatchlistRestController {
 
 	@Autowired

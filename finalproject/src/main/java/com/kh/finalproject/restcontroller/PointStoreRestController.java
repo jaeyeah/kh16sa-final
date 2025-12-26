@@ -15,7 +15,7 @@ import com.kh.finalproject.dao.InventoryDao;
 import com.kh.finalproject.vo.*;
 
 @RestController
-@RequestMapping("/point/main/store")
+@RequestMapping("/api/point/main/store")
 @CrossOrigin
 public class PointStoreRestController {
 

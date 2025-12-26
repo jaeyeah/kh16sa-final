@@ -25,7 +25,7 @@ import com.kh.finalproject.vo.TokenVO;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/review/report")
+@RequestMapping("/api/review/report")
 public class ReviewReportRestController {
 	
 	@Autowired

@@ -42,7 +42,7 @@ import com.kh.finalproject.vo.TokenVO;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 public class MemberRestController {
 
 	@Autowired

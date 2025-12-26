@@ -25,7 +25,7 @@ import com.kh.finalproject.vo.ReviewVO;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/review")
+@RequestMapping("/api/review")
 public class ReviewRestController {
 
 	private final ReviewService reviewService;

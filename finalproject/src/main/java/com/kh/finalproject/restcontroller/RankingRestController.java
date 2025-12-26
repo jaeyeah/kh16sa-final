@@ -16,7 +16,7 @@ import com.kh.finalproject.vo.UserRankingVO;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/ranking")
+@RequestMapping("/api/ranking")
 public class RankingRestController {
 	
 	@Autowired
