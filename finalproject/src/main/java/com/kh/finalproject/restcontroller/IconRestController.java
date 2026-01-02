@@ -21,7 +21,7 @@ import com.kh.finalproject.service.IconService;
 import com.kh.finalproject.vo.PointUseVO;
 
 @RestController
-@RequestMapping("/icon")
+@RequestMapping("/api/icon")
 @CrossOrigin
 public class IconRestController {
 

@@ -11,7 +11,7 @@ import com.kh.finalproject.vo.DailyQuestVO;
 import com.kh.finalproject.vo.DailyQuizVO;
 
 @RestController
-@RequestMapping("/point/quest")
+@RequestMapping("/api/point/quest")
 @CrossOrigin
 public class DailyQuestRestController {
 

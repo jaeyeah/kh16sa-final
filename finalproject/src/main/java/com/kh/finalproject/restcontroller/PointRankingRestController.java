@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.finalproject.vo.PointRankingVO;
 
 @RestController
-@RequestMapping("/point/ranking")
+@RequestMapping("/api/point/ranking")
 @CrossOrigin
 public class PointRankingRestController {
     

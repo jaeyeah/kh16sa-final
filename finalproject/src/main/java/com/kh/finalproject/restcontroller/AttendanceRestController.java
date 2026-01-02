@@ -17,7 +17,7 @@ import com.kh.finalproject.dto.AttendanceStatusDto;
 import com.kh.finalproject.service.AttendanceService;
 
 @RestController
-@RequestMapping("/point/main/attendance/")
+@RequestMapping("/api/point/main/attendance/")
 @CrossOrigin // CORS 허용
 public class AttendanceRestController {
 

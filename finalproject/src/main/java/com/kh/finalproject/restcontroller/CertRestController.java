@@ -19,7 +19,7 @@ import jakarta.validation.Valid;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/cert")
+@RequestMapping("/api/cert")
 public class CertRestController {
 	@Autowired
 	private EmailService emailService;
