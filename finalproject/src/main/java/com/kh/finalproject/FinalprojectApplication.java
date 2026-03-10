@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-// Spring Security 자동 설정 제외
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+
+@SpringBootApplication
 public class FinalprojectApplication extends SpringBootServletInitializer { // 1. 여기 extends 추가 필수!
 
     // 2. 외장 톰캣 배포를 위한 설정 메서드 (오버라이드)
